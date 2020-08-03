@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping List</title>
+    <style>
+        *{
+            box-sizing: border-box;
+        }
+        html,body{
+            padding:0;
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+       #header{
+            text-align: center;
+            padding: 10px 0;
+            background-color: brown;
+            color:white;
+            font-size: 2rem;
+        }
+        #items{
+            list-style: none;
+            width: 100%;
+            display:flex;
+            flex-direction: column;
+            align-items:center;
+            justify-content: center;
+        }
+        #items li{
+            width: 80%;
+            margin: 5px 0;
+            padding: 20px 10px;
+            color:white;
+            font-weight: bold;
+            background-color: lightblue;
+        }
+        .tip{
+            width: 50%;
+            padding: 20px 0;
+            color:white;
+            background-color: rebeccapurple;
+            opacity:.8;
+            text-align: center;
+        }
+        .tip-holder{
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+   <div id="header">Shopping List</div>
+   <div class="tip-holder">
+        <p class="tip">
+            Ctrl+D to add new item
+        </p>
+   </div>
+   <div class="tip-holder">
+    <p class="tip" style="background-color: lightgray;">
+      Double Click to remove a shoppinglist item
+    </p>
+</div>
+    <ul id="items">
+
+    </ul>
+    <script>
+        const electron = require('electron');
+        const {ipcRenderer} = electron;
+        const ul = document.querySelector('#items');
+
+        ipcRenderer.on('item:add',(e,item)=>{
+           let li = createLi(item);
+           ul.appendChild(li);
+        });
+
+        ipcRenderer.on('item:clear',()=>{
+            ul.innerHTML='';
+        })
+
+        ipcRenderer.on('items:get',(e,items)=>{
+            items.map((item,index)=>{
+                let li = createLi(index+1+'. '+item);
+                ul.appendChild(li);
+            });
+        });
+
+        ipcRenderer.send('loaded');
+
+        function createLi(textNode){
+            let li =  document.createElement('li');
+            li.classList.add('shopping-item');
+            li.innerText = textNode;
+            return li;
+        }
+        // REMOVE ITEM
+        ul.addEventListener('dblclick',removeItem);
+
+        function removeItem(e){
+            e.target.remove();
+        }
+    </script>
+</body>
+</html>
