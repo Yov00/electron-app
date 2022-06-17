@@ -12,7 +12,7 @@
   "author": "Yovelinski",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^9.1.2",
+    "electron": "^15.5.5",
     "electron-packager": "^15.0.0"
   }
 }
